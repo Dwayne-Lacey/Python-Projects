@@ -171,51 +171,51 @@ while start_game != "y" and start_game != "n":
 
 
 
+if start_game == "y":
+    #Setup players
+    while number_players != "1" and number_players != "2":
+        number_players = input("Will there be 1 or 2 players? ")
 
-#Setup players
-while number_players != "1" and number_players != "2":
-    number_players = input("Will there be 1 or 2 players? ")
 
+    while size_grid < 3 or size_grid > 10:
+        size_grid = input("Please choose a grid size between 3 and 10 ")
+        if size_grid.isdigit() == False:
+            size_grid = 0
+        else:
+            size_grid = int(size_grid)
 
-while size_grid < 3 or size_grid > 10:
-    size_grid = input("Please choose a grid size between 3 and 10 ")
-    if size_grid.isdigit() == False:
-        size_grid = 0
+    new_game = Game_Grid(number_players, size_grid)
+
+    if new_game.players == "1":
+        player1_name = input("Please enter your name. ")
+        while player_shape != new_game.player_shape_types[0] and player_shape != new_game.player_shape_types[1]:
+            player_shape = input("What shape would you like to use? {} or {}? ".format(new_game.player_shape_types[0], new_game.player_shape_types[1])).upper()
+        if player_shape == new_game.player_shape_types[0]:
+            other_shape = new_game.player_shape_types[1]
+        else:
+            other_shape = new_game.player_shape_types[0]
+        player1 = Player(player1_name, player_shape)
+        player2 = Player("CPU", other_shape)
     else:
-        size_grid = int(size_grid)
-
-new_game = Game_Grid(number_players, size_grid)
-
-if new_game.players == "1":
-    player1_name = input("Please enter your name. ")
-    while player_shape != new_game.player_shape_types[0] and player_shape != new_game.player_shape_types[1]:
-        player_shape = input("What shape would you like to use? {} or {}? ".format(new_game.player_shape_types[0], new_game.player_shape_types[1])).upper()
-    if player_shape == new_game.player_shape_types[0]:
-        other_shape = new_game.player_shape_types[1]
-    else:
-        other_shape = new_game.player_shape_types[0]
-    player1 = Player(player1_name, player_shape)
-    player2 = Player("CPU", other_shape)
-else:
-    player1_name = input("Player 1 - Please enter your name. ")
-    player2_name = input("Player 2 - Please enter your name. ")
-    while player_shape != new_game.player_shape_types[0] and player_shape != new_game.player_shape_types[1]:
-        player_shape = input("What shape would you like to use? {} or {}? ".format(new_game.player_shape_types[0], new_game.player_shape_types[1])).upper()
-    if player_shape == new_game.player_shape_types[0]:
-        other_shape = new_game.player_shape_types[1]
-    else:
-        other_shape = new_game.player_shape_types[0]
-    player1 = Player(player1_name, player_shape)
-    player2 = Player(player2_name, other_shape)    
+        player1_name = input("Player 1 - Please enter your name. ")
+        player2_name = input("Player 2 - Please enter your name. ")
+        while player_shape != new_game.player_shape_types[0] and player_shape != new_game.player_shape_types[1]:
+            player_shape = input("What shape would you like to use? {} or {}? ".format(new_game.player_shape_types[0], new_game.player_shape_types[1])).upper()
+        if player_shape == new_game.player_shape_types[0]:
+            other_shape = new_game.player_shape_types[1]
+        else:
+            other_shape = new_game.player_shape_types[0]
+        player1 = Player(player1_name, player_shape)
+        player2 = Player(player2_name, other_shape)    
 
 
 
 
 
-player1_turn = new_game.coin_flip()
+    player1_turn = new_game.coin_flip()
 
-new_game.build_grid()
-new_game.print_grid()
+    new_game.build_grid()
+    new_game.print_grid()
 
 #Game flow    
 while start_game == "y":
