@@ -47,7 +47,10 @@ class Game_Grid:
                 for val in range(0, len(value)):
                     if value[val] == " ":
                         available_spaces.append(str(key) + str(val + 1))
-        return available_spaces[randint(0, len(available_spaces) - 1)]
+        if len(available_spaces) == 0:
+            return print("Game Over")
+        else:
+            return available_spaces[randint(0, len(available_spaces) - 1)]
         
 
     def check_marker_valid(self, marker, player_shape):
@@ -83,12 +86,60 @@ class Game_Grid:
             print("{} won the coin toss, they will go first.".format(player2.player_name))
             return False
 
+    def check_if_game_over(self):
+        for key, value in self.game_grid.items():
+            if key != 0:
+                if value.count(player1.player_shape) == len(value) or value.count(player2.player_shape) == len(value):
+                    return True
+        
+
+        for val in range(0, len(self.game_grid.values()) - 1):
+            vertical_list = []
+            for key, value in self.game_grid.items():
+                if key != 0:
+                    vertical_list.append(value[val])
+            if vertical_list.count(player1.player_shape) == len(vertical_list) or vertical_list.count(player2.player_shape) == len(vertical_list):
+                return True
+
+        tl_br_diagonal = []
+        n = 0
+        for key, value in self.game_grid.items():
+            if key != 0:
+                tl_br_diagonal.append(value[n])
+                n += 1
+        if tl_br_diagonal.count(player1.player_shape) == len(tl_br_diagonal) or tl_br_diagonal.count(player2.player_shape) == len(tl_br_diagonal):
+            return True
+
+        tr_bl_diagonal = []
+        n = -1
+        for key, value in self.game_grid.items():
+            if key != 0:
+                tr_bl_diagonal.append(value[n])
+                n -= 1
+        if tr_bl_diagonal.count(player1.player_shape) == len(tr_bl_diagonal) or tr_bl_diagonal.count(player2.player_shape) == len(tr_bl_diagonal):
+            return True
+        else:
+            return False
+    
+    def check_if_draw(self):
+        n = 0
+        for key, value in self.game_grid.items():
+            if key != 0:
+                for val in value:
+                    if val != " ":
+                        n += 1
+        if self.grid_size ** 2 == n:
+            return True
+        else:
+            return False
+
 
 
 class Player:
     def __init__(self, player_name, player_shape):
         self.player_name = player_name
         self.player_shape = player_shape
+        self.points = 0
 
 
 #Initialize variables here
@@ -97,6 +148,7 @@ marker_placed = False
 player_shape = ""
 number_players = ""
 size_grid = 0
+game_over = False
 
 #Code to add game title at top of terminal
 print("------------------------------------------ ")
@@ -176,6 +228,15 @@ while start_game == "y":
             marker = input("{} where would you like to place your marker? ".format(player1.player_name))
             marker_placed = new_game.check_marker_valid(marker, player1.player_shape)
             new_game.print_grid()
+            game_over = new_game.check_if_game_over()
+            if game_over == True:
+                print("The winner is {}!".format(player1.player_name))
+                player1.points += 1
+                print("{P1} {P1_points} : {P2} {P2_points}".format(P1 = player1.player_name, P1_points = player1.points, P2 = player2.player_name, P2_points = player2.points))
+            else:
+                game_over = new_game.check_if_draw()
+                if game_over == True:
+                    print("The game was a draw.")
         player1_turn = False
     else:
         while marker_placed == False:
@@ -186,6 +247,31 @@ while start_game == "y":
                 marker = input("{} where would you like to place your marker? ".format(player2.player_name))
             marker_placed = new_game.check_marker_valid(marker, player2.player_shape)
             new_game.print_grid()
+            game_over = new_game.check_if_game_over()
+            if game_over == True:
+                print("The winner is {}!".format(player2.player_name))
+                player2.points += 1
+                print("{P2} {P2_points} : {P1} {P1_points}".format(P2 = player2.player_name, P2_points = player2.points, P1 = player1.player_name, P1_points = player1.points))
+            else:
+                game_over = new_game.check_if_draw()
+                if game_over == True:
+                    print("The game was a draw.")
+                
         player1_turn = True            
     
-    marker_placed = False
+    if game_over == False:
+        marker_placed = False
+    else:
+        play_again = ""
+        while play_again != "y" and play_again != "n":
+            play_again = input("Would you like to play again? y/n ").lower()
+        if play_again == "n":
+            print("Thanks for playing!")
+            start_game = "n"
+        else:
+            new_game.build_grid()
+            new_game.print_grid()
+            player1_turn = new_game.coin_flip()
+            game_over = False
+            marker_placed = False
+            
